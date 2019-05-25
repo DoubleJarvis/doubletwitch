@@ -54,6 +54,7 @@
     };
       var player = new Twitch.Player(channel, options)
       player.setVolume(window.volume)
+      player.setMuted(true)
       player.setQuality(window.lowQuality)
       players.push({
         player: player,
