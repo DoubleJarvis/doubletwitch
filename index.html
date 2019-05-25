@@ -65,7 +65,12 @@
   <script>
     document.getElementById("submit-channel").onclick = (e) => {
       e.preventDefault()
-      addStream(document.getElementById("stream-channel").value)
+      const channel = document.getElementById("stream-channel").value
+      if (!window.existingChannels.find( elem => elem === channel)) { 
+        addStream(channel)
+      } else {
+        alert("Cannot add duplicate channel")
+      }
     }
     muteAndQuality = (event) => {
       const player = findPlayer(event)
@@ -93,6 +98,7 @@
       console.log("stream for " + channel)
       document.getElementById("wrapper").append(el)
       createTwitchEmbed(channel);
+      window.existingChannels.push(channel)
     }
     // create streams from querystring
     (() => {
