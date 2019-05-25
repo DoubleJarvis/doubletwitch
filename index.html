@@ -68,13 +68,17 @@
     document.getElementById("submit-channel").onclick = (e) => {
       e.preventDefault()
       const channel = document.getElementById("stream-channel").value
-      if (!window.existingChannels.find( elem => elem === channel)) { 
-        addStream(channel)
-        window.existingChannels.push(channel)
-        // set URL for copying and shit
-        window.history.replaceState({}, "title", "?channels=" + window.existingChannels.join(","))
+      if (channel) {
+        if (!window.existingChannels.find( elem => elem === channel)) { 
+          addStream(channel)
+          window.existingChannels.push(channel)
+          // set URL for copying and shit
+          window.history.replaceState({}, "title", "?channels=" + window.existingChannels.join(","))
+        } else {
+          alert("Cannot add duplicate channel")
+        }
       } else {
-        alert("Cannot add duplicate channel")
+        alert("Cannot add empty channel")
       }
     }
     muteAndQuality = (event) => {
