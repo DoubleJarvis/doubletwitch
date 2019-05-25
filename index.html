@@ -29,6 +29,8 @@
       window.topQuality = "chunked"
       if (window.location.search) {
         window.existingChannels = window.location.search.substring(10).split(",")
+      } else {
+        window.existingChannels = []
       }
     </script>
   </head>
