@@ -12,37 +12,89 @@
       #wrapper {
         padding: 0.5em;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         grid-gap: 0.2em;
       }
       .stream-container {
         background-color: #444;
       }
     </style>
+    <script>
+      window.volume = 0.5;
+      window.quality = "480p30"
+      window.topQuality = "chunked"
+      if (window.location.search) {
+        window.existingChannels = window.location.search.substring(10).split(",")
+      }
+    </script>
   </head>
   <body>
     <header>
-      Etta Herro
       <form action="" id="add_stream">
         <input type="text" name="stream-channel" id="stream-channel">
-        <input type="Submit" id="submit-channel">
+        <input type="Submit" id="submit-channel" value="Add stream">
       </form>
     </header>
     <main id="wrapper">
 
     </main>
   </body>
+  <script src= "https://player.twitch.tv/js/embed/v1.js"></script>
+  <script type="text/javascript">
+    const players = []
+    createTwitchEmbed = (channel) => {
+      var options = {
+      width: "100%",
+      height: 300,
+      channel: channel,
+    };
+      var player = new Twitch.Player(channel, options)
+      player.setVolume(window.volume)
+      player.setQuality(window.quality)
+      players.push({
+        player: player,
+        id: channel
+      })
+    }
+  </script>
   <script>
     document.getElementById("submit-channel").onclick = (e) => {
       e.preventDefault()
       addStream(document.getElementById("stream-channel").value)
     }
+    muteAndQuality = (event) => {
+      const player = findPlayer(event)
+      if (!player.getFullscreen()) {
+        player.setMuted(true)
+        player.setQuality(window.quality)
+      }
+    }
+    unmuteAndQuality = (event) => {
+      const player = findPlayer(event)
+      player.setMuted(false)
+      player.setQuality(window.topQuality)
+    }
+    findPlayer = (event) => {
+      const channel = event.target.id
+      let player = players.find( elem => elem.id === channel).player
+      return player
+    }
     addStream = (channel) => {
       const el = document.createElement("div");
       el.id = channel;
+      el.onmouseenter = unmuteAndQuality
+      el.onmouseleave = muteAndQuality
       console.log("stream for " + channel)
-      el.innerText = channel;
       document.getElementById("wrapper").append(el)
+      createTwitchEmbed(channel);
     }
+    // create streams from querystring
+    (() => {
+      if (window.existingChannels) {
+        window.existingChannels.forEach( channel => {
+          addStream(channel)
+        })
+      }
+    })()
   </script>
 </html>
